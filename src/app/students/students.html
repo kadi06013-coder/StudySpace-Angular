@@ -1,0 +1,214 @@
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">S</div>
+            <span>StudySpace</span>
+        </div>
+
+        <p class="menu-label">MENU</p>
+
+        <nav class="navigation">
+            <a class="nav-item active" href="#">
+                <span>▦</span> Dashboard
+            </a>
+            <a class="nav-item" href="#students-section">
+                <span>♙</span> Students
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="welcome-icon">♡</div>
+            <p>Keep learning,<br><strong>keep growing!</strong></p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        @if (notification) {
+        <div class="notification" [class.success]="notificationType === 'success'"
+            [class.error]="notificationType === 'error'">
+            {{ notification }}
+        </div>
+        }
+
+        <header class="topbar">
+            <div>
+                <p class="small-text">WELCOME BACK 👋</p>
+                <h1>Student Dashboard</h1>
+                <p class="subtitle">Manage your students in one place.</p>
+            </div>
+
+            <div class="profile">
+                <div class="profile-avatar">R</div>
+                <div>
+                    <strong>Admin</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Statistics -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon purple">♙</div>
+                <p>Total Students</p>
+                <h2>{{ students.length }}</h2>
+                <span class="stat-note">Registered students</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon pink">♡</div>
+                <p>Student Management</p>
+                <h2>Active</h2>
+                <span class="stat-note">Your dashboard is ready</span>
+            </div>
+
+        </section>
+
+        <!-- Students List -->
+        <section class="content-card" id="students-section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Students List</h2>
+                    <p>Manage and organize your students.</p>
+                </div>
+
+                <span class="count-badge">
+                    {{ filteredStudents.length }} Students
+                </span>
+            </div>
+
+            <!-- Search -->
+            <div class="search-wrapper">
+                <input type="text" placeholder="Search students..." [(ngModel)]="searchText">
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STUDENT NAME</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @for (student of filteredStudents; track student) {
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <div class="student-avatar">
+                                        {{ student.charAt(0).toUpperCase() }}
+                                    </div>
+                                    <strong>{{ student }}</strong>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="status-badge">Active</span>
+                            </td>
+                            <td class="actions">
+                                <button class="edit-btn" (click)="startEdit(student)">
+                                    Edit
+                                </button>
+
+                                <button class="delete-btn" (click)="deleteStudent(student)">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                        } @empty {
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                @if (searchText.trim()) {
+                                No students found. Try another name!
+                                } @else {
+                                No students yet. Add your first student!
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+        @if (isEditing) {
+        <div class="modal-overlay">
+            <div class="edit-modal">
+
+                <h2>Edit Student</h2>
+                <p>Update the student's information.</p>
+
+                <input type="text" placeholder="Student name" [(ngModel)]="newStudentName">
+
+                <div class="modal-actions">
+                    <button class="cancel-btn" (click)="isEditing = false">
+                        Cancel
+                    </button>
+
+                    <button class="edit-btn" (click)="saveEdit()">
+                        Save Changes
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        }
+
+        <!-- Add Student -->
+        <section class="content-card form-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Add New Student</h2>
+                    <p>Enter the name of your new student.</p>
+                </div>
+                <div class="form-icon">＋</div>
+            </div>
+
+            <div class="form-row">
+                <input #studentInput type="text" placeholder="Enter student name">
+
+                <button class="primary-btn" (click)="addStudent(studentInput.value); studentInput.value = ''">
+                    + Add Student
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Edit Student -->
+        <section class="content-card form-card">
+
+            <div class="section-header">
+                <div>
+                    <h2>Edit Student</h2>
+                    <p>Change an existing student's name.</p>
+                </div>
+                <div class="form-icon">✎</div>
+            </div>
+
+            <div class="form-row edit-row">
+                <input #oldStudent type="text" placeholder="Old student name">
+
+                <input #newStudent type="text" placeholder="New student name">
+
+                <button class="edit-btn" (click)="editStudent(oldStudent.value, newStudent.value)">
+                    Save Changes
+                </button>
+            </div>
+
+        </section>
+
+        <footer>
+            Made with ♡ for your students
+        </footer>
+
+    </main>
+</div>
